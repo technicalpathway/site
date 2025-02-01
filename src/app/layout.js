@@ -24,7 +24,10 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthModalProvider>
-          {children}
+          <main className="min-h-screen">
+            {children}
+            
+          </main>
         </AuthModalProvider>
       </body>
     </html>

@@ -1,9 +1,10 @@
 import Header from "./components/home/Header";
-import Navigation from "./components/home/Navigation";
+import Footer from "./components/home/Footer";
 export default function Home() {
   return (
     <div>
       <Header />
+      <Footer />
     </div>
   );
 }
