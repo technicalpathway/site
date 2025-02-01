@@ -40,6 +40,57 @@ export default function Header() {
               Login
             </button>
           </div>
+
+          {/* Logo Cloud Section */}
+          <div className="mt-16 sm:mt-24 border-t border-gray-800 pt-8">
+            <p className="text-sm font-semibold leading-6 text-gray-400 mb-6">
+              Trusted by engineers from top companies
+            </p>
+            <div className="mt-4 grid grid-cols-3 md:grid-cols-6 w-full gap-4">
+              <div className=" ">
+                <img
+                  className="h-20 rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
+                  src="https://logo.clearbit.com/capitalone.com"
+                  alt="Capital One"
+                />
+              </div>
+              <div className=" ">
+                <img 
+                  className="h-20 rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
+                  src="https://logo.clearbit.com/jpmorganchase.com" 
+                  alt="JPMorgan Chase"
+                />
+              </div>
+              <div className=" ">
+                <img
+                  className="h-20 rounded-sm opacity-80 hover:opacity-100 transition-all duration-300" 
+                  src="https://logo.clearbit.com/anduril.com"
+                  alt="Anduril"
+                />
+              </div>
+              <div className=" ">
+                <img
+                  className="h-20 rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
+                  src="https://logo.clearbit.com/comcast.com"
+                  alt="Comcast"
+                />
+              </div>
+              <div className=" ">
+                <img
+                  className="h-20 rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
+                  src="https://logo.clearbit.com/lockheedmartin.com"
+                  alt="Lockheed Martin"
+                />
+              </div>
+              <div className=" ">
+                <img
+                  className="h-20 rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
+                  src="https://logo.clearbit.com/nationwide.com"
+                  alt="Nationwide"
+                />
+              </div>
+            </div>
+          </div>
         </div>
         <div className="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:mt-0 lg:mr-0 lg:ml-10 lg:max-w-none lg:flex-none xl:ml-32">
           <div className="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">
