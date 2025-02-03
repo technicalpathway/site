@@ -15,6 +15,23 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "TechnicalPathways",
   description: "A better way to master technical interviews.",
+  metadataBase: new URL('https://technicalpathways.com'),
+  openGraph: {
+    title: 'TechnicalPathways',
+    description: 'A better way to master technical interviews.',
+    images: [{
+      url: '/MetadataBanner.png',
+      width: 1200,
+      height: 630,
+      alt: 'TechnicalPathways - Master Technical Interviews'
+    }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'TechnicalPathways',
+    description: 'A better way to master technical interviews.',
+    images: ['/MetadataBanner.png'],
+  }
 };
 
 export default function RootLayout({ children }) {
