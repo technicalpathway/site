@@ -7,7 +7,8 @@ import CodeEditor from '../components/ide/CodeEditor';
 import Console from '../components/ide/Console';
 import { executeCode } from '../utils/webcontainer';
 
-const defaultCode = `function twoSum(nums, target) {
+const defaultCodes = {
+  javascript: `function twoSum(nums, target) {
   // Write your solution here
   const map = new Map();
   
@@ -24,10 +25,114 @@ const defaultCode = `function twoSum(nums, target) {
 // Test the function
 const nums = [2, 7, 11, 15];
 const target = 9;
-console.log(twoSum(nums, target));`;
+console.log(twoSum(nums, target));`,
+
+  python: `def two_sum(nums, target):
+    # Write your solution here
+    num_map = {}
+    
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in num_map:
+            return [num_map[complement], i]
+        num_map[num] = i
+    return None
+
+# Test the function
+nums = [2, 7, 11, 15]
+target = 9
+print(two_sum(nums, target))`,
+
+  java: `import java.util.*;
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        // Write your solution here
+        Map<Integer, Integer> map = new HashMap<>();
+        
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            if (map.containsKey(complement)) {
+                return new int[] { map.get(complement), i };
+            }
+            map.put(nums[i], i);
+        }
+        return null;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] nums = {2, 7, 11, 15};
+        int target = 9;
+        int[] result = solution.twoSum(nums, target);
+        System.out.println(Arrays.toString(result));
+    }
+}`,
+
+  cpp: `#include <vector>
+#include <unordered_map>
+#include <iostream>
+
+using namespace std;
+
+vector<int> twoSum(vector<int>& nums, int target) {
+    // Write your solution here
+    unordered_map<int, int> map;
+    
+    for (int i = 0; i < nums.size(); i++) {
+        int complement = target - nums[i];
+        if (map.find(complement) != map.end()) {
+            return {map[complement], i};
+        }
+        map[nums[i]] = i;
+    }
+    return {};
+}
+
+int main() {
+    vector<int> nums = {2, 7, 11, 15};
+    int target = 9;
+    vector<int> result = twoSum(nums, target);
+    cout << "[" << result[0] << ", " << result[1] << "]" << endl;
+    return 0;
+}`,
+
+  c: `#include <stdio.h>
+#include <stdlib.h>
+
+int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+    // Write your solution here
+    int* result = (int*)malloc(2 * sizeof(int));
+    *returnSize = 2;
+    
+    for (int i = 0; i < numsSize; i++) {
+        for (int j = i + 1; j < numsSize; j++) {
+            if (nums[i] + nums[j] == target) {
+                result[0] = i;
+                result[1] = j;
+                return result;
+            }
+        }
+    }
+    return result;
+}
+
+int main() {
+    int nums[] = {2, 7, 11, 15};
+    int numsSize = 4;
+    int target = 9;
+    int returnSize;
+    int* result = twoSum(nums, numsSize, target, &returnSize);
+    printf("[%d, %d]\\n", result[0], result[1]);
+    free(result);
+    return 0;
+}`
+};
 
 export default function IDEPage() {
-  const [code, setCode] = useState(defaultCode);
+  const [code, setCode] = useState(defaultCodes.javascript);
   const [theme, setTheme] = useState("vs-dark");
   const [isConsoleOpen, setIsConsoleOpen] = useState(true);
   const [output, setOutput] = useState("");
@@ -40,6 +145,15 @@ export default function IDEPage() {
 
   const handleEditorChange = (value) => {
     setCode(value);
+  };
+
+  const handleLanguageChange = (newLanguage) => {
+    // First update the language
+    setLanguage(newLanguage);
+    // Then update the code with the corresponding template
+    if (defaultCodes[newLanguage]) {
+      setCode(defaultCodes[newLanguage]);
+    }
   };
 
   const runCode = async () => {
@@ -133,7 +247,6 @@ export default function IDEPage() {
           className="border-r border-gray-800 overflow-hidden flex flex-col"
           style={{ width: `${leftPanelWidth}%` }}
         >
-       
           <ProblemDescription />
         </div>
 
@@ -158,7 +271,7 @@ export default function IDEPage() {
             onRun={runCode}
             height={`${100 - consoleHeight}%`}
             language={language}
-            onLanguageChange={setLanguage}
+            onLanguageChange={handleLanguageChange}
           />
 
           {/* Console Resize Handle */}

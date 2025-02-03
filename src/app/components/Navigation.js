@@ -35,26 +35,18 @@ export default function Navigation() {
             >
               <span>IDE Testing <span className="bg-indigo-700 text-white px-2 py-1 rounded-md text-xs">DEVELOPER</span></span>
             </Link>
-            <Link 
-              href="/developer/flags" 
-              className={`transition-colors flex items-center space-x-2 ${
-                pathname === '/developer/flags' 
-                  ? 'text-white' 
-                  : 'text-gray-400 hover:text-white'
-              }`}
+            <button 
+              disabled
+              className="transition-colors flex items-center space-x-2 text-gray-600 cursor-not-allowed opacity-50"
             >
               <span>Flags <span className="bg-indigo-700 text-white px-2 py-1 rounded-md text-xs">DEVELOPER</span></span>
-            </Link>
-            <Link 
-              href="/developer/flags" 
-              className={`transition-colors flex items-center space-x-2 ${
-                pathname === '/developer/flags' 
-                  ? 'text-white' 
-                  : 'text-gray-400 hover:text-white'
-              }`}
+            </button>
+            <button 
+              disabled
+              className="transition-colors flex items-center space-x-2 text-gray-600 cursor-not-allowed opacity-50"
             >
               <span>Content Editor <span className="bg-indigo-700 text-white px-2 py-1 rounded-md text-xs">DEVELOPER</span></span>
-            </Link>
+            </button>
           </nav>
         </div>
         <button className="text-gray-400 hover:text-white transition-colors flex items-center space-x-2">

@@ -29,22 +29,18 @@ export default function CodeEditor({
   onLanguageChange = () => {} // Add default no-op function
 }) {
   const languages = [
-    'javascript',
-    'python',
-    'java',
-    'cpp',
-    'c',
+    { id: 'javascript', name: 'JavaScript', supported: true },
+    { id: 'python', name: 'Python', supported: true },
+    { id: 'java', name: 'Java', supported: false },
+    { id: 'cpp', name: 'C++', supported: false },
+    { id: 'c', name: 'C', supported: false },
   ];
 
   const getLanguageDisplay = (lang) => {
-    const displayNames = {
-      'javascript': 'JavaScript',
-      'python': 'Python',
-      'java': 'Java',
-      'cpp': 'C++',
-      'c': 'C'
-    };
-    return displayNames[lang] || lang;
+    const language = languages.find(l => l.id === lang);
+    if (!language) return lang;
+    if (!language.supported) return `${language.name}`;
+    return language.name;
   };
 
   return (
@@ -58,9 +54,9 @@ export default function CodeEditor({
           <div className="flex items-center space-x-3">
             <button
               onClick={onRun}
-              disabled={isRunning}
+              disabled={isRunning || !languages.find(l => l.id === language)?.supported}
               className={`px-3 py-1.5 rounded-md inline-flex items-center justify-center space-x-1.5 text-sm ${
-                isRunning 
+                isRunning || !languages.find(l => l.id === language)?.supported
                   ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
                   : 'bg-green-600 text-white hover:bg-indigo-500'
               }`}
@@ -82,8 +78,13 @@ export default function CodeEditor({
                 }}
               >
                 {languages.map((lang) => (
-                  <option key={lang} value={lang}>
-                    {getLanguageDisplay(lang)}
+                  <option 
+                    key={lang.id} 
+                    value={lang.id}
+                    disabled={!lang.supported}
+                    className={!lang.supported ? 'text-gray-500' : ''}
+                  >
+                    {getLanguageDisplay(lang.id)}
                   </option>
                 ))}
               </select>
@@ -99,7 +100,7 @@ export default function CodeEditor({
       >
         <Editor
           height="100%"
-          defaultLanguage={language}
+          language={language}
           theme="customTheme"
           beforeMount={(monaco) => {
             monaco.editor.defineTheme('customTheme', customTheme);
