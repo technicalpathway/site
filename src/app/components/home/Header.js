@@ -3,6 +3,7 @@
 import { ChevronRightIcon } from '@heroicons/react/20/solid'
 import { FaUserPlus, FaSignInAlt } from 'react-icons/fa';
 import { useAuthModal } from '../../context/AuthModalContext';
+import Image from 'next/image';
 
 export default function Header() {
   const { openLogin, openRegister } = useAuthModal();
@@ -47,60 +48,75 @@ export default function Header() {
               Trusted by engineers from top companies
             </p>
             <div className="mt-4 grid grid-cols-3 md:grid-cols-6 w-full gap-4">
-              <div className=" ">
-                <img
-                  className="h-20 rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
+              <div className="relative h-20">
+                <Image
+                  className="rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
                   src="https://logo.clearbit.com/capitalone.com"
                   alt="Capital One"
+                  fill
+                  style={{ objectFit: 'contain' }}
                 />
               </div>
-              <div className=" ">
-                <img 
-                  className="h-20 rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
-                  src="https://logo.clearbit.com/jpmorganchase.com" 
+              <div className="relative h-20">
+                <Image
+                  className="rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
+                  src="https://logo.clearbit.com/jpmorganchase.com"
                   alt="JPMorgan Chase"
+                  fill
+                  style={{ objectFit: 'contain' }}
                 />
               </div>
-              <div className=" ">
-                <img
-                  className="h-20 rounded-sm opacity-80 hover:opacity-100 transition-all duration-300" 
+              <div className="relative h-20">
+                <Image
+                  className="rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
                   src="https://logo.clearbit.com/anduril.com"
                   alt="Anduril"
+                  fill
+                  style={{ objectFit: 'contain' }}
                 />
               </div>
-              <div className=" ">
-                <img
-                  className="h-20 rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
+              <div className="relative h-20">
+                <Image
+                  className="rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
                   src="https://logo.clearbit.com/comcast.com"
                   alt="Comcast"
+                  fill
+                  style={{ objectFit: 'contain' }}
                 />
               </div>
-              <div className=" ">
-                <img
-                  className="h-20 rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
+              <div className="relative h-20">
+                <Image
+                  className="rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
                   src="https://logo.clearbit.com/lockheedmartin.com"
                   alt="Lockheed Martin"
+                  fill
+                  style={{ objectFit: 'contain' }}
                 />
               </div>
-              <div className=" ">
-                <img
-                  className="h-20 rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
+              <div className="relative h-20">
+                <Image
+                  className="rounded-sm opacity-80 hover:opacity-100 transition-all duration-300"
                   src="https://logo.clearbit.com/nationwide.com"
                   alt="Nationwide"
+                  fill
+                  style={{ objectFit: 'contain' }}
                 />
               </div>
             </div>
           </div>
         </div>
-        <div className="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:mt-0 lg:mr-0 lg:ml-10 lg:max-w-none lg:flex-none xl:ml-32">
+        <div className="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:mt-0 lg:mr-0 lg:ml-10 lg:max-w-none xl:ml-32">
           <div className="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">
-            <img
-              alt="App screenshot"
-              src="./mock.png"
-              width={2432}
-              height={1442}
-              className="w-[76rem] rounded-md bg-white/5 ring-1 shadow-2xl ring-white/10"
-            />
+            <div className="relative w-[76rem] h-[45rem]">
+              <Image
+                src="/mock.png"
+                alt="App screenshot"
+                fill
+                priority
+                className="rounded-md bg-white/5 ring-1 shadow-2xl ring-white/10"
+                style={{ objectFit: 'contain' }}
+              />
+            </div>
           </div>
         </div>
       </div>

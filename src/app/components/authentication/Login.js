@@ -2,8 +2,28 @@
 
 import { FaGoogle, FaGithub, FaTimes } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Login({ isOpen, onClose }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Check for dev credentials
+    if (email === 'dev' && password === 'dev') {
+      onClose(); // Close the modal
+      router.push('/dashboard'); // Redirect to dashboard
+      return;
+    }
+    
+    // Handle normal login logic here
+    console.log('Regular login attempt');
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -82,14 +102,16 @@ export default function Login({ isOpen, onClose }) {
                       </div>
 
                       {/* Email/Password Form */}
-                      <form className="space-y-4">
+                      <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                           <label htmlFor="email" className="block text-sm font-medium text-gray-300">
                             Email address
                           </label>
                           <input
-                            type="email"
+                            type="text"
                             id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="mt-1 block w-full rounded-lg bg-gray-800 border-gray-700 text-white px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             placeholder="you@example.com"
                           />
@@ -101,6 +123,8 @@ export default function Login({ isOpen, onClose }) {
                           <input
                             type="password"
                             id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             className="mt-1 block w-full rounded-lg bg-gray-800 border-gray-700 text-white px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             placeholder="••••••••"
                           />
@@ -153,7 +177,7 @@ export default function Login({ isOpen, onClose }) {
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.5 }}
                     >
-                      Join thousands of developers who are improving their technical interview skills with TechnicalPathways.
+                      Join our community of developers who are improving their technical interview skills with TechnicalPathways.
                     </motion.p>
                   </div>
                 </motion.div>
