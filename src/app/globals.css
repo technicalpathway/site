@@ -3,6 +3,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #000000;
+  }
+
+  [data-theme='dark'] {
+    --background: #000000;
+    --foreground: #ffffff;
+  }
+}
+
 body {
+  @apply bg-background text-foreground;
   font-family: 'Poppins', sans-serif;
 }
