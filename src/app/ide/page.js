@@ -5,6 +5,7 @@ import Navigation from '../components/Navigation';
 import ProblemDescription from '../components/ide/ProblemDescription';
 import CodeEditor from '../components/ide/CodeEditor';
 import Console from '../components/ide/Console';
+import TestCases from '../components/ide/TestCases';
 import { executeCode } from '../utils/webcontainer';
 
 const defaultCodes = {
@@ -139,9 +140,25 @@ export default function IDEPage() {
   const [isRunning, setIsRunning] = useState(false);
   const [leftPanelWidth, setLeftPanelWidth] = useState(40); // percentage
   const [consoleHeight, setConsoleHeight] = useState(30); // percentage
+  const [testPanelHeight, setTestPanelHeight] = useState(65); // percentage - problem description takes 65%, test cases 35%
   const [language, setLanguage] = useState('javascript');
+  const [testCases, setTestCases] = useState([
+    {
+      input: { nums: [2, 7, 11, 15], target: 9 },
+      expected: [0, 1]
+    },
+    {
+      input: { nums: [3, 2, 4], target: 6 },
+      expected: [1, 2]
+    },
+    {
+      input: { nums: [3, 3], target: 6 },
+      expected: [0, 1]
+    }
+  ]);
   const isDraggingRef = useRef(false);
   const isConsoleResizingRef = useRef(false);
+  const isTestPanelResizingRef = useRef(false);
 
   const handleEditorChange = (value) => {
     setCode(value);
@@ -169,6 +186,102 @@ export default function IDEPage() {
       }
     } catch (error) {
       setOutput(`Error: ${error.message}`);
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
+  const runTests = async () => {
+    setIsRunning(true);
+    setOutput("Running tests...");
+    
+    const results = [];
+    let allPassed = true;
+    
+    try {
+      for (let i = 0; i < testCases.length; i++) {
+        const testCase = testCases[i];
+        const { nums, target } = testCase.input;
+        
+        // Create test wrapper based on language
+        let testCode;
+        if (language === 'javascript') {
+          testCode = `
+            ${code}
+            const result = twoSum([${nums}], ${target});
+            console.log(JSON.stringify(result));
+          `;
+        } else if (language === 'python') {
+          testCode = `
+            ${code}
+            result = two_sum([${nums}], ${target})
+            print(result)
+          `;
+        } else {
+          throw new Error(`Language ${language} is not supported for testing`);
+        }
+        
+        const result = await executeCode(testCode, language);
+        
+        if (result.success) {
+          try {
+            // Clean the output by removing any whitespace, newlines, or quotes
+            const cleanOutput = result.output.trim().replace(/[\r\n"']/g, '');
+            let output;
+            
+            try {
+              // Try to parse as JSON first
+              output = JSON.parse(cleanOutput);
+            } catch {
+              // If not valid JSON, try to parse array-like string
+              const matches = cleanOutput.match(/\[(.*?)\]/);
+              if (matches) {
+                output = matches[1].split(',').map(num => parseInt(num.trim()));
+              } else {
+                throw new Error('Invalid output format');
+              }
+            }
+
+            const passed = Array.isArray(output) && 
+                          output.length === 2 && 
+                          output[0] === testCase.expected[0] && 
+                          output[1] === testCase.expected[1];
+            
+            results.push({
+              ...testCase,
+              result: {
+                passed,
+                output
+              }
+            });
+            
+            if (!passed) allPassed = false;
+          } catch (e) {
+            results.push({
+              ...testCase,
+              result: {
+                passed: false,
+                output: result.output.trim()
+              }
+            });
+            allPassed = false;
+          }
+        } else {
+          results.push({
+            ...testCase,
+            result: {
+              passed: false,
+              output: result.error
+            }
+          });
+          allPassed = false;
+        }
+      }
+      
+      setTestCases(results);
+      setOutput(allPassed ? "All test cases passed! 🎉" : "Some test cases failed.");
+    } catch (error) {
+      setOutput(`Error running tests: ${error.message}`);
     } finally {
       setIsRunning(false);
     }
@@ -228,12 +341,42 @@ export default function IDEPage() {
     document.removeEventListener('mouseup', stopConsoleResizing);
   };
 
+  const startTestPanelResizing = (e) => {
+    e.preventDefault();
+    isTestPanelResizingRef.current = true;
+    document.addEventListener('mousemove', handleTestPanelMouseMove);
+    document.addEventListener('mouseup', stopTestPanelResizing);
+  };
+
+  const handleTestPanelMouseMove = (e) => {
+    if (!isTestPanelResizingRef.current) return;
+    
+    const leftPanel = document.getElementById('left-panel');
+    if (!leftPanel) return;
+
+    const containerRect = leftPanel.getBoundingClientRect();
+    const totalHeight = containerRect.height;
+    const distanceFromTop = e.clientY - containerRect.top;
+    const newHeight = (distanceFromTop / totalHeight) * 100;
+    
+    // Limit the height between 20% and 80%
+    setTestPanelHeight(Math.min(Math.max(20, newHeight), 80));
+  };
+
+  const stopTestPanelResizing = () => {
+    isTestPanelResizingRef.current = false;
+    document.removeEventListener('mousemove', handleTestPanelMouseMove);
+    document.removeEventListener('mouseup', stopTestPanelResizing);
+  };
+
   useEffect(() => {
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', stopResizing);
       document.removeEventListener('mousemove', handleConsoleMouseMove);
       document.removeEventListener('mouseup', stopConsoleResizing);
+      document.removeEventListener('mousemove', handleTestPanelMouseMove);
+      document.removeEventListener('mouseup', stopTestPanelResizing);
     };
   }, []);
 
@@ -244,10 +387,33 @@ export default function IDEPage() {
       <div id="main-container" className="flex-1 flex relative">
         {/* Problem Description Panel */}
         <div 
+          id="left-panel"
           className="border-r border-gray-800 overflow-hidden flex flex-col"
           style={{ width: `${leftPanelWidth}%` }}
         >
-          <ProblemDescription />
+          <div 
+            className="overflow-y-auto scrollbar-hide"
+            style={{ height: `${testPanelHeight}%` }}
+          >
+            <ProblemDescription />
+          </div>
+
+          {/* Test Panel Resize Handle */}
+          <div
+            className="h-1 bg-gray-800 hover:bg-indigo-500 cursor-row-resize transition-colors"
+            onMouseDown={startTestPanelResizing}
+          />
+
+          <div 
+            className="flex-1 overflow-y-auto scrollbar-hide"
+            style={{ height: `${100 - testPanelHeight}%` }}
+          >
+            <TestCases 
+              testCases={testCases}
+              onRunTests={runTests}
+              isRunning={isRunning}
+            />
+          </div>
         </div>
 
         {/* Resize Handle */}
